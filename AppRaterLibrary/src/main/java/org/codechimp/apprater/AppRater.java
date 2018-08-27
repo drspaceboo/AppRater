@@ -36,6 +36,8 @@ public class AppRater {
     private static boolean isVersionCodeCheckEnabled;
     private static boolean isCancelable = true;
 
+    private static ShowController showController = new DefaultShowController();
+
     private static String packageName;
 
     private static Market market = new GoogleMarket();
@@ -175,10 +177,15 @@ public class AppRater {
         }
         // Wait for at least the number of launches or the number of days used
         // until prompt
-        if (launch_count >= launches || (System.currentTimeMillis() >= date_firstLaunch + (days * 24 * 60 * 60 * 1000))) {
+        if (showController.shouldShow(launch_count, System.currentTimeMillis(), launches,
+                                      date_firstLaunch + (days * 24 * 60 * 60 * 1000))) {
             showRateAlertDialog(context, editor);
         }
         commitOrApply(editor);
+    }
+
+    public static void setShowController(final ShowController controller){
+        showController = controller;
     }
 
     /**
